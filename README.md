@@ -27,7 +27,7 @@
 Нужны для корректного сравнения числе с плавающей точкой (с учётом погрешности).
 
 Точность сравнения задаётся константой `EPS`:
-```
+```cpp
 const double EPS = 1e-7;
 ```
 
@@ -41,11 +41,47 @@ const double EPS = 1e-7;
 
 Массив передаётся в функцию по указателю с ключевым словом `const` для защиты от изменений.
 
+```cpp
+void print_arr(const int a[], int n) {
+    cout << n << endl;
+    for (int i = 0; i < n; i++)
+        cout << a[i] << " ";
+    cout << endl;
+}
+```
+
+### Функция `del`
+
+Удаляет елемент из массива.
+
+Удаление производится путём сдвига и перезаписи удаляемого значения.
+Переменная, отвечающая за размер массива уменьшается на единицу, однако фактически размер массива не изменяется.
+
+Массив `x` передается в функцию по указателю вместе с его размером `n`. Так же передаётся индекс удаляемого элемента `pos`.
+
+```cpp
+void del(int a[], int& n, int pos) {
+    for (int i = pos; i < n - 1; i++)
+        a[i] = a[i + 1];
+    n--;
+    return;
+}
+```
+
 ### Функция `mean`
 
 Вычисляет среднее арифметическое числового массива.
 
 Массив передаётся в функцию по указателю с ключевым словом `const` для защиты от изменений.
+
+```cpp
+double mean(const int a[], int n) {
+    double sum = 0;
+    for (int i = 0; i < n; i++)
+        sum += a[i];
+    return sum / n;
+}
+```
 
 ### Функция `fill_y`
 
@@ -55,9 +91,48 @@ const double EPS = 1e-7;
 
 Заранее сказать, сколько элементов будет в массиве `y` невозможно, поэтому в функцию передаётся указатель на будущий массив (память для него будет выделенна динамически с помощью операции `new`), а его размер `m` передаётся по ссылке для возможности его изменять. 
 
+```cpp
+void fill_y(int x[], int n, int * y[], int& m) {
+
+    double mean_val = mean(x, n);
+
+    cout << "\nСреденее арифметическое массива x(n):\n";
+    cout << mean_val << endl;
+
+    m = 0;
+    for (int i = 0; i < n; i++) {
+        if (is_greater(x[i], mean_val))
+            m++;
+    }
+
+    int * tmp = new int[m];
+
+    int j = 0;
+    for (int i = 0; i < n; i++) {
+        if (is_greater(x[i], mean_val))
+            tmp[j++] = x[i];
+    }
+
+    *y = tmp;
+
+    return;
+}
+```
+
 ### Функция `is_prime`
 
 Проверяет число на простоту используя метод перебора всех возможных делителей числа.
+
+```cpp
+bool is_prime(int n) {
+    if (n <= 1) return false;
+    for (int i = 2; i * i <= n; i++) {
+        if (n % i == 0)
+            return false;
+    }
+    return true;
+}
+```
 
 
 ## Пример работы программы
@@ -92,7 +167,7 @@ const double EPS = 1e-7;
 
 (Находится в файле `main.cpp`)
 
-```
+```cpp
 #include <iostream>
 #include <cstdlib>
 
@@ -217,60 +292,6 @@ int main() {
     return 0;
 }
 
+...
 
-void print_arr(const int a[], int n) {
-    cout << n << endl;
-    for (int i = 0; i < n; i++)
-        cout << a[i] << " ";
-    cout << endl;
-}
-
-void del(int a[], int& n, int pos) {
-    for (int i = pos; i < n - 1; i++)
-        a[i] = a[i + 1];
-    n--;
-    return;
-}
-
-double mean(const int a[], int n) {
-    double sum = 0;
-    for (int i = 0; i < n; i++)
-        sum += a[i];
-    return sum / n;
-}
-
-void fill_y(int x[], int n, int * y[], int& m) {
-
-    double mean_val = mean(x, n);
-
-    cout << "\nСреденее арифметическое массива x(n):\n";
-    cout << mean_val << endl;
-
-    m = 0;
-    for (int i = 0; i < n; i++) {
-        if (is_greater(x[i], mean_val))
-            m++;
-    }
-
-    int * tmp = new int[m];
-
-    int j = 0;
-    for (int i = 0; i < n; i++) {
-        if (is_greater(x[i], mean_val))
-            tmp[j++] = x[i];
-    }
-
-    *y = tmp;
-
-    return;
-}
-
-bool is_prime(int n) {
-    if (n <= 1) return false;
-    for (int i = 2; i * i <= n; i++) {
-        if (n % i == 0)
-            return false;
-    }
-    return true;
-}
 ```
